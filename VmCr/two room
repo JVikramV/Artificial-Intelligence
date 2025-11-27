@@ -1,0 +1,53 @@
+# Vacuum Cleaner Agent for Two Rooms (AI)
+
+class VacuumCleanerAgent:
+    def __init__(self, location, environment):
+        self.location = location          # A or B
+        self.environment = environment    # {'A': 'Dirty/Clean', 'B': 'Dirty/Clean'}
+
+    def perceive(self):
+        return self.environment[self.location]
+
+    def act(self):
+        # If current room is dirty, clean it
+        if self.perceive() == "Dirty":
+            print(f"Room {self.location} is Dirty -> Action: SUCK")
+            self.environment[self.location] = "Clean"
+
+        else:
+            # Move to other room
+            if self.location == 'A':
+                print("Room A is Clean -> Moving to Room B")
+                self.location = 'B'
+            else:
+                print("Room B is Clean -> Moving to Room A")
+                self.location = 'A'
+
+    def run(self):
+        print("Initial Environment:", self.environment)
+        print("Starting at Room:", self.location)
+        print("-" * 40)
+
+        while "Dirty" in self.environment.values():
+            self.act()
+            print("Current Environment:", self.environment)
+            print("Current Location:", self.location)
+            print("-" * 40)
+
+        print("All rooms are clean. Action: NO-OP")
+        print("Final Environment:", self.environment)
+
+
+# ---- MAIN PROGRAM ----
+
+# Initial state of rooms
+environment = {
+    'A': 'Dirty',
+    'B': 'Dirty'
+}
+
+# Agent starts in Room A
+agent = VacuumCleanerAgent('A', environment)
+
+# Run the agent
+agent.run()
