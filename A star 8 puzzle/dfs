@@ -1,0 +1,72 @@
+# 8 Puzzle using DFS (Depth First Search)
+
+def find_blank(state):
+    for i in range(3):
+        for j in range(3):
+            if state[i][j] == 0:
+                return i, j
+
+
+def get_neighbors(state):
+    neighbors = []
+    x, y = find_blank(state)
+
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
+
+    for dx, dy in directions:
+        nx, ny = x + dx, y + dy
+
+        if 0 <= nx < 3 and 0 <= ny < 3:
+            new_state = [list(row) for row in state]
+            new_state[x][y], new_state[nx][ny] = new_state[nx][ny], new_state[x][y]
+            neighbors.append(tuple(map(tuple, new_state)))
+
+    return neighbors
+
+
+def print_state(state):
+    for row in state:
+        print(row)
+    print()
+
+
+def dfs(initial_state, goal_state, limit=50):
+    stack = [(initial_state, [])]
+    visited = set()
+
+    while stack:
+        current_state, path = stack.pop()
+
+        if current_state == goal_state:
+            return path + [current_state]
+
+        if len(path) > limit:   # Depth limit to avoid infinite search
+            continue
+
+        visited.add(current_state)
+
+        for neighbor in get_neighbors(current_state):
+            if neighbor not in visited:
+                stack.append((neighbor, path + [current_state]))
+
+    return None
+
+
+# -------- MAIN PROGRAM --------
+
+GOAL_STATE = ((1, 2, 3),
+              (4, 5, 6),
+              (7, 8, 0))
+
+INITIAL_STATE = ((1, 2, 3),
+                 (4, 0, 6),
+                 (7, 5, 8))
+
+solution = dfs(INITIAL_STATE, GOAL_STATE)
+
+if solution:
+    print("Solution found (DFS):", len(solution) - 1, "moves\n")
+    for step in solution:
+        print_state(step)
+else:
+    print("No solution found within depth limit")
